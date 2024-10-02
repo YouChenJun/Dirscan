@@ -20,10 +20,10 @@ func Request(Targeturl string) *http.Response {
 		MaxIdleConns:        0,  //host的最大链接数量,0表示无限大
 		MaxIdleConnsPerHost: 10, //连接池对每个host的最大链接数量
 	}
-	if Proxy != ""  && ProxyFile == ""{
-		Proxyset(tr,Proxy)
-	}else if Proxy == ""  && ProxyFile != ""{
-		Proxyset(tr,NewProxy)
+	if Proxy != "" && ProxyFile == "" {
+		Proxyset(tr, Proxy)
+	} else if Proxy == "" && ProxyFile != "" {
+		Proxyset(tr, NewProxy)
 	}
 
 	//设置客户端
@@ -39,9 +39,13 @@ func Request(Targeturl string) *http.Response {
 	//targeturl := url.QueryEscape(Targeturl)
 	req, err := http.NewRequest(Requestmode, Targeturl, nil)
 	if err != nil {
-		fmt.Println("a",err)
+		fmt.Println("a", err)
 	}
-	req.Header.Set("User-Agent", Uas) //设置随机UA头
+
+	if UserAgentFile != "" {
+		var Uas = Randomget(ReadFile(UserAgentFile), 1)
+		req.Header.Set("User-Agent", Uas) //设置随机UA头
+	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	if Cookie != "null" {
 		req.Header.Set("Cookie", Cookie) //设置cookie
@@ -91,7 +95,11 @@ func GETRequest(Targeturl string) *http.Response {
 	if err != nil {
 		fmt.Println(err)
 	}
-	req.Header.Set("User-Agent", Uas) //设置随机UA头
+
+	if UserAgentFile != "" {
+		var Uas = Randomget(ReadFile(UserAgentFile), 1)
+		req.Header.Set("User-Agent", Uas) //设置随机UA头
+	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	if Cookie != "null" {
 		req.Header.Set("Cookie", Cookie) //设置cookie
@@ -132,7 +140,7 @@ func Socks5Dailer(Socks5proxy string) (proxy.Dialer, error) {
 	return dailer, nil
 }
 
-func Proxyset(tr *http.Transport,proxy string ) {
+func Proxyset(tr *http.Transport, proxy string) {
 	u, _ := url.Parse(proxy)
 	if strings.ToLower(u.Scheme) != "socks5" { //判断前缀走什么代理
 		tr.Proxy = http.ProxyURL(u) //代理 URL 返回一个代理函数（用于传输），该函数始终返回相同的 URL。
@@ -144,4 +152,3 @@ func Proxyset(tr *http.Transport,proxy string ) {
 		}
 	}
 }
-

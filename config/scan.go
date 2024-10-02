@@ -38,11 +38,10 @@ func Scans(Turl string) {
 		go func() {
 			ticker := time.NewTicker(2 * time.Second)
 			for range ticker.C {
-				NewProxy = Randomget(ReadFile(ProxyFile),1)
+				NewProxy = Randomget(ReadFile(ProxyFile), 1)
 			}
 		}()
 	}
-
 
 	//设置线程阻塞
 	w.Add(Threads)
@@ -54,7 +53,7 @@ func Scans(Turl string) {
 			go GetScan(Turl, pathChan, &w, &bar)
 		} else if Requestmode == "HEAD" {
 			go HeadScan(Turl, pathChan, &w, &bar)
-		}else{
+		} else {
 			fmt.Println("[!] 请输入正确的请求方式！")
 			os.Exit(0)
 		}
@@ -93,11 +92,11 @@ func Scanes() {
 		Turl := Urll(surl)
 		if FindUrl(Turl) == true {
 			//fmt.Printf("\rtarget: %v\n",Turl)
-			color.Green.Printf("\rtarget: %v\n",Turl)
+			color.Green.Printf("\rtarget: %v\n", Turl)
 			Scans(Turl)
-		}else {
+		} else {
 			//fmt.Printf("\rtarget: %v  [!] 目标url无法访问\n",Turl)
-			color.Red.Printf("\rtarget: %v  [!] 目标url无法访问\n",Turl)
+			color.Red.Printf("\rtarget: %v  [!] 目标url无法访问\n", Turl)
 		}
 	}
 
@@ -113,25 +112,24 @@ func AntiScans(aurl string) {
 		Turl := Urll(Aurl)
 		if FindUrl(Turl) == true {
 			//fmt.Printf("\rtarget: %v\n",Turl)
-			color.Green.Printf("\rtarget: %v\n",Turl)
+			color.Green.Printf("\rtarget: %v\n", Turl)
 			Scans(Turl)
-		}else {
+		} else {
 			//fmt.Printf("\rtarget: %v  [!] 目标url无法访问\n",Turl)
-			color.Red.Printf("\rtarget: %v  [!] 目标url无法访问\n",Turl)
+			color.Red.Printf("\rtarget: %v  [!] 目标url无法访问\n", Turl)
 		}
 	}
-
 
 }
 
 // HeadScan Scan Head扫描
 func HeadScan(Turl string, pathChan <-chan string, w *sync.WaitGroup, bar *Bar) {
 	for path := range pathChan {
-		Targeturl := Turl + strings.Replace(path,"%","%25",-1)
-		resp := Request( Targeturl)
+		Targeturl := Turl + strings.Replace(path, "%", "%25", -1)
+		resp := Request(Targeturl)
 		if resp != nil {
 			Rurl := resp.Header.Get("location") //获取302跳转的url
-			respCode := resp.StatusCode //状态码
+			respCode := resp.StatusCode         //状态码
 
 			//指定状态码排除
 			codes := Codel(Rcode)
@@ -146,7 +144,6 @@ func HeadScan(Turl string, pathChan <-chan string, w *sync.WaitGroup, bar *Bar) 
 				}
 			}
 
-
 		}
 		//进度条计数
 		bar.Add(1)
@@ -159,7 +156,7 @@ func HeadScan(Turl string, pathChan <-chan string, w *sync.WaitGroup, bar *Bar) 
 // GetScan Getscan  Get扫描
 func GetScan(Turl string, pathChan <-chan string, w *sync.WaitGroup, bar *Bar) {
 	for path := range pathChan {
-		Targeturl := Turl + strings.Replace(path,"%","%25",-1)
+		Targeturl := Turl + strings.Replace(path, "%", "%25", -1)
 		//Targeturl := Turl + path
 		//Targeturl := Turl +`/`+ url.QueryEscape(path)
 		//fmt.Println(Targeturl)
@@ -177,9 +174,9 @@ func GetScan(Turl string, pathChan <-chan string, w *sync.WaitGroup, bar *Bar) {
 			nocodes := Codel(Neglect)
 			newcodes := difference(codes, nocodes)
 			for _, code := range newcodes {
-				if respCode == code  {
+				if respCode == code {
 					//fmt.Println(Targeturl)
-					GetPrint(respCode, Bodylen,body, Turl, path, Rurl)
+					GetPrint(respCode, Bodylen, body, Turl, path, Rurl)
 
 					//记录递归扫描的目录
 					if Recursion == true {
@@ -210,10 +207,8 @@ func Processchecks(Turl string) {
 				}
 			}
 		}()
-	}else if ProxyFile == "" && Checksurvive == true {
+	} else if ProxyFile == "" && Checksurvive == true {
 		color.Red.Printf("\r[*] 已关闭存活检查！\n")
 	}
 
-
 }
-

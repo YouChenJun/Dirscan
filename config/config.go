@@ -15,13 +15,10 @@ import (
 	"time"
 )
 
-
 var Time = time.Now().Format("2006/01/02 15:04:05")
 
-var Uas = Randomget(ReadFile("./dic/user-agents.txt"),1)
-
 // Codel code 输入范围转换为数组
-func Codel(code string) []int{
+func Codel(code string) []int {
 	var codes []int
 	//Trim：去掉前后端指定的字符；Split：以指定的字符为标准分割字符串
 	codeArr := strings.Split(strings.Trim(code, ","), ",")
@@ -36,14 +33,14 @@ func Codel(code string) []int{
 			endPort, _ := filterCode(codeArr2[1])
 			if endPort > startPort {
 				for i := startPort; i <= endPort; i++ {
-					codes = append(codes,i )
+					codes = append(codes, i)
 				}
-			}else {
+			} else {
 				for i := endPort; i <= startPort; i++ {
-					codes = append(codes,i )
+					codes = append(codes, i)
 				}
 			}
-		}else {
+		} else {
 			codes = append(codes, startPort)
 		}
 	}
@@ -53,7 +50,7 @@ func Codel(code string) []int{
 	//fmt.Println(codes)
 }
 
-//转换strng为int
+// 转换strng为int
 func filterCode(str string) (int, error) {
 	code, err := strconv.Atoi(str)
 	if err != nil {
@@ -65,7 +62,7 @@ func filterCode(str string) (int, error) {
 	return code, nil
 }
 
-//去重
+// 去重
 func arrayUnique(arr []int) []int {
 	var newArr []int
 	for i := 0; i < len(arr); i++ {
@@ -83,9 +80,8 @@ func arrayUnique(arr []int) []int {
 	return newArr
 }
 
-
 // Storage 转换大小
-func Storage(num int) string{
+func Storage(num int) string {
 	a := num / 1024
 	var b int
 	var c string
@@ -93,53 +89,51 @@ func Storage(num int) string{
 
 	case a == 0:
 		//fmt.Print(num,"B")
-		c = strconv.Itoa(num) +"B"
-	case a >=1 && a < 1024:
+		c = strconv.Itoa(num) + "B"
+	case a >= 1 && a < 1024:
 		//fmt.Print(a,"KB")
-		c = strconv.Itoa(a) +"KB"
-	case a >=1024 && a < 1048576:
+		c = strconv.Itoa(a) + "KB"
+	case a >= 1024 && a < 1048576:
 		b = a / 1024
 		//fmt.Print(b,"MB")
-		c = strconv.Itoa(b) +"MB"
-	case a >=1048576 && a < 1073741824:
-		b = (a/1024) / 1024
+		c = strconv.Itoa(b) + "MB"
+	case a >= 1048576 && a < 1073741824:
+		b = (a / 1024) / 1024
 		//fmt.Print(b,"GB")
-		c = strconv.Itoa(b) +"GB"
+		c = strconv.Itoa(b) + "GB"
 	}
 	return c
 }
-
 
 // Urll   url后面加去除/
 func Urll(url string) string {
 
 	a := url[len(url)-1:]
-	if a == "/" {
-		url = strings.TrimRight(url,a)
+	if a != "/" {
+		url += "/"
 	}
 	//fmt.Println(url)
 	return url
 }
 
 // IsPath 判断字典是目录还是文件
-func IsPath(pathname string) bool{
+func IsPath(pathname string) bool {
 	//如果文件名和文件前缀相同，则是目录
-	filenameall := path.Base(pathname)	 //获取不包含目录的文件名
-	filesuffix := path.Ext(pathname)	//获取文件后缀
-	fileprefix := filenameall[0:len(filenameall) - len(filesuffix)] //文件前缀
+	filenameall := path.Base(pathname)                              //获取不包含目录的文件名
+	filesuffix := path.Ext(pathname)                                //获取文件后缀
+	fileprefix := filenameall[0 : len(filenameall)-len(filesuffix)] //文件前缀
 
-
-	if fileprefix == filenameall{ //文件名和文件前缀相同为目录，否则为文件
+	if fileprefix == filenameall { //文件名和文件前缀相同为目录，否则为文件
 		//fmt.Println(pathname,"这是目录")
 		return true
-	}else {
+	} else {
 		//fmt.Println(pathname," 文件")
 		return false
 	}
 }
 
 // Urladdress url地址获取
-func Urladdress(url string) string{
+func Urladdress(url string) string {
 	a1 := strings.Split(url, "//")[1]
 	a2 := strings.Split(a1, "/")[0]
 	a3 := strings.Replace(a2, ".", "_", -1)
@@ -151,8 +145,8 @@ func Urladdress(url string) string{
 
 // CodeIstrue codeIstrue 状态码输入检测
 func CodeIstrue(intcode []int) {
-	for _,v := range intcode {
-		if v <100 || v> 600 {
+	for _, v := range intcode {
+		if v < 100 || v > 600 {
 			fmt.Println("状态码输入错误，请输入正确状态码")
 			os.Exit(0)
 		}
@@ -198,9 +192,7 @@ func InitConfig(path string) map[string]string {
 	return config
 }
 
-
-
-//求交集
+// 求交集
 func intersect(slice1, slice2 []int) []int {
 	m := make(map[int]int)
 	nn := make([]int, 0)
@@ -216,7 +208,8 @@ func intersect(slice1, slice2 []int) []int {
 	}
 	return nn
 }
-//求差集 slice1-并集
+
+// 求差集 slice1-并集
 func difference(slice1, slice2 []int) []int {
 	m := make(map[int]int)
 	nn := make([]int, 0)
@@ -234,20 +227,18 @@ func difference(slice1, slice2 []int) []int {
 	return nn
 }
 
-
-
 // RemoveRepByLoop 通过两重循环过滤重复元素数组去重
 func RemoveRepByLoop(slc []string) []string {
 	var result []string // 存放结果
-	for i := range slc{
+	for i := range slc {
 		flag := true
-		for j := range result{
+		for j := range result {
 			if slc[i] == result[j] {
-				flag = false  // 存在重复元素，标识为false
+				flag = false // 存在重复元素，标识为false
 				break
 			}
 		}
-		if flag {  // 标识为false，不添加进结果
+		if flag { // 标识为false，不添加进结果
 			result = append(result, slc[i])
 		}
 	}
@@ -255,13 +246,13 @@ func RemoveRepByLoop(slc []string) []string {
 }
 
 // Recursionchoose 递归扫描的数据存储
-func Recursionchoose(respCode int ,url string,path string) {
-	if (respCode == 200 ||respCode == 301 || respCode == 302 || respCode == 403) && IsPath(Urll(path)) == true  {
+func Recursionchoose(respCode int, url string, path string) {
+	if (respCode == 200 || respCode == 301 || respCode == 302 || respCode == 403) && IsPath(Urll(path)) == true {
 		// 正则表达式模式，匹配以 /etc/ 开头的路径
 		pattern := "^/etc/.*$"
 		match, _ := regexp.MatchString(pattern, path)
 		if match != true {
-			Urlpath := Urll(url+path)
+			Urlpath := Urll(url + path)
 			//color.Green.Printf("\rAdd: %v                                \n", Urlpath )
 			BiaoJi = append(BiaoJi, Urlpath)
 		}
@@ -272,8 +263,8 @@ func Recursionchoose(respCode int ,url string,path string) {
 // Defaultfile 生成默认配置文件
 func Defaultfile() {
 	//创建文件夹
-	err:=os.Mkdir("./default",os.ModePerm)
-	if err!=nil{
+	err := os.Mkdir("./default", os.ModePerm)
+	if err != nil {
 		fmt.Println(err)
 	}
 
@@ -317,15 +308,14 @@ Cookie=null
 func Randomget(origin []string, count int) string {
 	tmpOrigin := make([]string, len(origin))
 	copy(tmpOrigin, origin)
-	rand.Seed(time.Now().Unix())   //实现了伪随机数生成器
-	rand.Shuffle(len(tmpOrigin), func(i int, j int) {   //随机打乱数组
+	rand.Seed(time.Now().Unix())                      //实现了伪随机数生成器
+	rand.Shuffle(len(tmpOrigin), func(i int, j int) { //随机打乱数组
 		tmpOrigin[i], tmpOrigin[j] = tmpOrigin[j], tmpOrigin[i]
 	})
 
-
 	var str string
 	for index, value := range tmpOrigin {
-		if index==count{
+		if index == count {
 			break
 		}
 		str = value
@@ -334,27 +324,26 @@ func Randomget(origin []string, count int) string {
 }
 
 // Typeselection 针对类型进行处理字典
-func Typeselection() []string{
+func Typeselection() []string {
 
 	dic := ReadFile(Pathfile)
 
 	var outcome []string
-	for _,newdic := range dic {
-		if Sitetype == "php" ||  Sitetype == "asp" ||  Sitetype == "aspx" ||  Sitetype == "jsp"{
-			if strings.Contains(newdic,"__Payload__") == true {
+	for _, newdic := range dic {
+		if Sitetype == "php" || Sitetype == "asp" || Sitetype == "aspx" || Sitetype == "jsp" {
+			if strings.Contains(newdic, "__Payload__") == true {
 				a := strings.Replace(newdic, "__Payload__", Sitetype, -1)
-				outcome = append(outcome,a)
-			}else {
-				outcome = append(outcome,newdic)
+				outcome = append(outcome, a)
+			} else {
+				outcome = append(outcome, newdic)
 			}
-		}else if Sitetype == "" {
-			if strings.Contains(newdic,"__Payload__") != true {
-				outcome = append(outcome,newdic)
+		} else if Sitetype == "" {
+			if strings.Contains(newdic, "__Payload__") != true {
+				outcome = append(outcome, newdic)
 			}
-		}else {
+		} else {
 			fmt.Println("不支持指定的类型！")
 		}
-
 
 	}
 
